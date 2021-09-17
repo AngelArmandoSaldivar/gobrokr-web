@@ -1,0 +1,10 @@
+.MuiSlider-rail, .MuiSlider-track {
+    color: #4FE3C1;
+}
+
+.MuiSlider-thumbColorPrimary {
+    width: 20px;
+    height: 20px;
+    color: #E5B88E;
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
