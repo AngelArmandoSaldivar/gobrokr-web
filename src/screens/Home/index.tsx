@@ -11,8 +11,8 @@ import {
 
 function Home() {
 
-  console.log('Local Storage remove: ', localStorage.getItem('token'));
   localStorage.removeItem('token');
+  localStorage.removeItem('idProperty');
 
   return (
     <Layout>

@@ -28,7 +28,7 @@ function SignIn(props: SignInProps) {
             window.location.href = '/populars';                      
         }).
         catch(err => {
-          Swal.fire({         
+          Swal.fire({
             text: "Error al iniciar sesión \n Verifica tus datos y vuelve a intentar.",     
             html:
             '<p style="color:#e5b88e; font-size:20px;">GoBrokr</p> \n' +
@@ -45,7 +45,7 @@ function SignIn(props: SignInProps) {
             `,
             confirmButtonText: 'Aceptar',
             confirmButtonColor: 'rgba(34,37,46,0.4)',
-          })          
+          })
         });     
       } else if(password == "" && email == "") {
         setErrorEmail('Ingresar correo!');
@@ -73,10 +73,7 @@ function SignIn(props: SignInProps) {
       isOpen={isOpen}
       onClose={onClose}
       isFullScreen={signUp}
-    >      
-
-    
-
+    >
       <SignIn.Container>
         {!signUp && !recoverPassword && (
           <SignIn.Information>

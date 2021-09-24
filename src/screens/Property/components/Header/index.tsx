@@ -1,32 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Image from '../../../../assets/images/property/principal.png';
 import Image1 from '../../../../assets/images/property/lateral-1.png';
 import Image2 from '../../../../assets/images/property/lateral-2.png';
+import axios from '../../../../api/index';
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
-function Header() {
+function Header(props:any) {
+  const token = localStorage.getItem('token');
+  const id = localStorage.getItem('idProperty');
+  const url = "http://localhost:3001/gb/api/v1/properties/" + id + "/" +"?access_token="+ token;
+  console.log(url);
+
+  const [price, setPrice] = useState('');   
+  const [archives, setArchives] = useState([]);
+
+  useEffect(() => {
+
+    axios.get(url).then((res:any) => {
+      setArchives(res.data.archives);      
+      setPrice(res.data.price);
+    })
+    .catch(err => console.log(err))
+    
+  }, []);  
+
+  
   return (
+    
     <Header.Container>
-      <Header.ImgCol>
-        <Header.MainImg src={Image} />
-      </Header.ImgCol>
-      <Header.ImgCol>
-        <Header.AltImg src={Image1} />
-        <Header.AltImg src={Image2} />
-      </Header.ImgCol>
-      <Header.Actions>
-        <Header.PriceContainer>
-          <Header.Price>
-            <Header.PriceText>$900.000</Header.PriceText>
-          </Header.Price>
-        </Header.PriceContainer>
-        <Header.GalleryContainer>
-          <Header.GalleryButton>Ver Galeria</Header.GalleryButton>
-        </Header.GalleryContainer>
-      </Header.Actions>
-    </Header.Container>
+     <Carousel showArrows={true}>    
+       {archives.map((item:any) => (
+           <Header.ImagePropertyContainer>
+             
+              <Header.img src={item.location} size={''}/>
+            </Header.ImagePropertyContainer>
+        ))}
+
+    </Carousel>    
+    </Header.Container>    
   );
 }
+Header.img = styled.img<{ size: number | string }>`
+  width: 100%;
+  height: 470px;
+`;
+Header.ImagePropertyContainer = styled.div`
+  
+`;
 
 Header.Container = styled.div`
   display: flex;

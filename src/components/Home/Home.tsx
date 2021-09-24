@@ -11,8 +11,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { RatingStar } from "rating-star";
+import exampleImage from '../../assets/images/example-estate.png';
+import exampleImage2 from '../../assets/images/hero-background.png';
+import imageFond from '../../assets/images/background-third.png';
 
-var data = ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1IeYBN05o8IgBtr0rdj4MgMeo6HW3g1FmKA&usqp=CAU"]
+
+  function obtenerId(id:any) {   
+      localStorage.setItem('idProperty', id);                   
+  };
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,18 +27,20 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    boxShadow: '0.05px 0.05px #1d202d' 
   },
 }));
 
-function Home(props: EstateCardProps) {
+function Home(props:EstateCardProps) {
 
   const classes = useStyles();
 
     var options = {
       enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0
+      timeout: 10000,
+      maximumAge: 3600
     };
         
     if(localStorage.getItem('token') === null){
@@ -40,84 +48,26 @@ function Home(props: EstateCardProps) {
     }
 
     const [properties, setProperties] = useState([]);
-    const [imageProfile,setImageProfile] = useState('');
-    const [location, setLocation] = useState({
-      loaded: true,
-      coordinates:{lat:"", lng:""},
-    });
 
-    const geoLocation = useGeolocation();
+    const token = localStorage.getItem('token');    
 
-    const token = localStorage.getItem('token');
+    const url = "http://localhost:3001/gb/api/v1/popularproperties/home/";
 
-    const onSuccess = (location:any) => {
-      setLocation({
-        loaded:true,
-        coordinates: {
-          lat: location.coords.latitude,
-          lng: location.coords.longitude,
-        }
-      })
+    function funLocation() {
+      navigator.geolocation.getCurrentPosition(function(position) {        
+        axios.get(url + position.coords.latitude + "/" + position.coords.longitude + "?access_token=" + token).then( res => {
+          setProperties(res.data.properties);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      });
     }
-
-    function onError(err:any) {
-      console.warn('ERROR(' + err.code + '): ' + err.message);
-    };
-
-    const color = {
-      orange: "#FFBA5A",
-      grey: "#a9a9a9"
-    }
-    const style = {
-      container: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
-      }
-
-    }
-
-    const starts = Array(5).fill(0);
 
     useEffect(() => {
 
-      if(!("geolocation" in navigator)) {
-        setLocation( state => ({
-          ...state,
-          loaded: true,
-          error: {
-            code: 0,
-            message: "Geolocation no supported",
-          }
-        }));
-      }      
-
-      navigator.geolocation.getCurrentPosition(onSuccess, onError, options);      
-      
-      if(Number(location.coordinates.lat) && Number(location.coordinates.lat) > 0) {
-        const url = "http://localhost:3001/gb/api/v1/popularproperties/home/" + Number(location.coordinates.lat) + '/' + Number(location.coordinates.lng)  + "/" +"?access_token="+ token;
-        axios.get(url).then( res => {
-          setProperties(res.data.properties);       
-          console.log(res); 
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      } else {
-        const url = "http://localhost:3001/gb/api/v1/popularproperties/home/" + Number(location.coordinates.lat) + '/' + Number(location.coordinates.lng)  + "/" +"?access_token="+ token;
-        axios.get(url).then( res => { 
-          setProperties(res.data.properties);    
-          console.log(res);                  
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }
-
-      properties.map((item:any) => {
-        console.log("Rating user: ", item.user.rating + "\n");
-      })
-      
+      funLocation();
+     
     }, []);    
         
     return (
@@ -131,29 +81,29 @@ function Home(props: EstateCardProps) {
           </Formik>
           <Home.CardContainer>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs>
-                <Paper className={classes.paper}>Departamento</Paper>
+                <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Departamento</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-                <Paper className={classes.paper}><Home.Link to="/property/12">Casa</Home.Link></Paper>
+                <Paper className={classes.paper}><Home.LinkFilter2 to="/property/12">Casa</Home.LinkFilter2></Paper>
               </Grid>
               <Grid item xs>
-                <Paper className={classes.paper}>Oficina</Paper>
+                <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Oficina</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-                <Paper className={classes.paper}>Edificio</Paper>
+              <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Edificio</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-                <Paper className={classes.paper}>Bodega</Paper>
+              <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Bodega</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-                <Paper className={classes.paper}>Terreno</Paper>
+              <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Terreno</Home.LinkFilter></Paper>
               </Grid>
             </Grid>
           
             <Home.TitleContainer>
-              <Home.Title>Encuentra, {"Angel Saldivar"}</Home.Title>
+              <Home.Title>Encuentra, {"Angel Saldivar"}</Home.Title>              
               </Home.TitleContainer>
              <Home.TitleContainer>
               <Home.Title>Novedades</Home.Title>
@@ -186,11 +136,12 @@ function Home(props: EstateCardProps) {
                       <Home.StarsContainer>                                    
                       < RatingStar 
                         id = "custom-icon-wow" 
-                        rating = {res.bathrooms}
+                        rating = {res.user.rating}
                         colors = { {  mask : "# 43a7e3"  } } 
                         noBorder 
                         maxScore = {5}
-                        onRatingChange = {(e) => 2}
+                        size = {15}
+
                       />                     
                       </Home.StarsContainer>
                     </Home.BrokrNameContainer>
@@ -205,16 +156,17 @@ function Home(props: EstateCardProps) {
                       </Home.EstateInfo>
                       <Home.LinksContainer>
                       <Home.Comission>Comisión: {res.totalCommission}%-({res.percentageCommission}/{res.totalCommission})</Home.Comission>
-                      <Home.Link to="/property/12">Ver</Home.Link>
+                      <Home.Link to={"/property/" + res.id} onClick={()=>obtenerId(res.id)}>Ver</Home.Link>
+                      {/* <button id={res.id} onClick={obtenerId}></button> */}
                       </Home.LinksContainer>
                   </Home.InformationContainer>
-              </Home.Card>  
-                </Grid>           
+              </Home.Card>
+                </Grid>
               ))}
             </Grid>
           </Home.CardContainer>
           </Home.Container>
-        </Layout>   
+        </Layout>
         </>
     );
 }
@@ -257,6 +209,9 @@ Home.Container = styled.div`
   justify-content: space-between;
   padding: 10px 5px;
   background-color: #1d202d;
+  background-image: url(${imageFond});
+  background-repeat: repeat;
+  background-size: auto 30%;
   margin-bottom: -20px;
 `;
 Home.CardContainer = styled.div`
@@ -392,6 +347,41 @@ Home.Link = styled(Link)<{ to: string }>`
   }
 `;
 
+Home.LinkFilter = styled(Link)<{ to: string }>`
+  color: #e5b88e;  
+  background-image: url(${exampleImage});
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 20px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #e5b88e;
+    color: white;    
+  }
+  &:focus {
+    outline: none;    
+  }
+`;
+
+Home.LinkFilter2 = styled(Link)<{ to: string }>`
+  color: #e5b88e;  
+  background-image: url(${exampleImage2});
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 20px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #e5b88e;
+    color: white;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
 //brokr info styles
 Home.BrokrInfo = styled.div`
   display: flex;
