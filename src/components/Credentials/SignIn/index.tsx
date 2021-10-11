@@ -19,13 +19,13 @@ function SignIn(props: SignInProps) {
 
   const authUser = async (e: string) => {    
 
-    const data = {email, password};       
+    const data = {email, password};        
 
       if(email && password){     
         const res = await axios.post('http://localhost:3001/gb/api/v1/users/login', data)
-        .then(res => {          
-          localStorage.setItem('token',res.data.id);          
-            window.location.href = '/populars';                      
+        .then(res => {  
+          localStorage.setItem('token',res.data.id);
+            window.location.href = '/populars';
         }).
         catch(err => {
           Swal.fire({
@@ -56,10 +56,8 @@ function SignIn(props: SignInProps) {
         setErrorPassword('Ingresar contraseña!');
       }
   }
-
-  // console.log(localStorage.getItem('token'));
   
-
+  
   const title = signUp
     ? 'Crear cuenta'
     : recoverPassword

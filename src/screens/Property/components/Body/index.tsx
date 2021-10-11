@@ -8,6 +8,7 @@ import axios from '../../../../api/index';
 import Swal from 'sweetalert2';
 import { RatingStar } from "rating-star";
 import GoogleMapReact from 'google-map-react';
+import { Link} from 'react-router-dom';
 
 import {
   EstateCard,
@@ -183,7 +184,8 @@ function Body() {
             </Body.Feature>
             <Body.Feature>              
               <Body.FeatureInfo><Body.Action>
-            <Button onClick={()=>IdBrokr()}>Ver Brokr</Button>
+            {/* <Button.Link onClick={()=>IdBrokr()}>Ver Brokr</Button.Link> */}
+            <Body.Link to={"/brokr/"} onClick={()=>IdBrokr()}>Ver</Body.Link>
           </Body.Action></Body.FeatureInfo>
             </Body.Feature>
           </Body.Features>
@@ -280,6 +282,23 @@ function Body() {
     </Body.Container>
   );
 }
+
+Body.Link = styled(Link)<{ to: string }>`
+  color: #e5b88e;
+  border: 1px solid #e5b88e;
+  background-color: transparent;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #e5b88e;
+    color: white;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
 
 Body.BrokrImage = styled.img<{ size: number | string }>`
   width: ${({ size }) => size};

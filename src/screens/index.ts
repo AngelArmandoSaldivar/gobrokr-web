@@ -3,3 +3,4 @@ export { default as Home } from './Home';
 export { default as Rent } from './Rent';
 export { default as Contact } from './Contact';
 export { default as Property } from './Property';
+export { default as Brokr } from './Brokr';

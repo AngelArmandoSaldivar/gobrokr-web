@@ -32,8 +32,7 @@ function Header(props:any) {
     <Header.Container>
      <Carousel showArrows={true}>    
        {archives.map((item:any) => (
-           <Header.ImagePropertyContainer>
-             
+           <Header.ImagePropertyContainer>   
               <Header.img src={item.location} size={''}/>
             </Header.ImagePropertyContainer>
         ))}

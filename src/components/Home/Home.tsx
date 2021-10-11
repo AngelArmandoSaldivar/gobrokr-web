@@ -15,7 +15,6 @@ import exampleImage from '../../assets/images/example-estate.png';
 import exampleImage2 from '../../assets/images/hero-background.png';
 import imageFond from '../../assets/images/background-third.png';
 
-
   function obtenerId(id:any) {   
       localStorage.setItem('idProperty', id);                   
   };
@@ -32,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0.05px 0.05px #1d202d' 
   },
 }));
+
 
 function Home(props:EstateCardProps) {
 
@@ -65,7 +65,7 @@ function Home(props:EstateCardProps) {
     }
 
     useEffect(() => {
-
+ 
       funLocation();
      
     }, []);    
@@ -109,10 +109,10 @@ function Home(props:EstateCardProps) {
               <Home.Title>Novedades</Home.Title>
             </Home.TitleContainer>            
 
-            <Grid container>
+            <Grid container spacing={10}>
               {properties.map((res:any) => (
                 
-                <Grid item key={res.id} xs={12} lg={4}>                  
+                <Grid item key={res.id} xs={12}  sm= {6} md={4} lg={4}>                  
                   <Home.Card className={classes.root}>
                   <Home.ImagePropertyContainer>                        
                     <Home.ImageProperty src={res.archives.map((item:any) => item.location)} size={''}/>
