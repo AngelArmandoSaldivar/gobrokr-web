@@ -36,7 +36,6 @@ function Header(props:any) {
               <Header.img src={item.location} size={''}/>
             </Header.ImagePropertyContainer>
         ))}
-
     </Carousel>    
     </Header.Container>    
   );

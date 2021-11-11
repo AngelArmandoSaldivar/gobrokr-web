@@ -7,19 +7,45 @@ import ParkinIcon from '../../../../assets/icons/parking-icon.svg';
 import axios from '../../../../api/index';
 import Swal from 'sweetalert2';
 import { RatingStar } from "rating-star";
-import GoogleMapReact from 'google-map-react';
 import { Link} from 'react-router-dom';
+import {GoogleMap, withScriptjs, withGoogleMap, Marker} from 'react-google-maps';
 
 import {
   EstateCard,
   TextInput,
   ButtonComponent as Button
 } from '../../../../components';
+
 import { UserInfo } from '../../../../components/EstateCard/components';
 import { useWindowScroll } from 'react-use';
 
+const token = localStorage.getItem('token');
+const id = localStorage.getItem('idProperty');
+const url = "http://localhost:3001/gb/api/v1/properties/" + id + "/" +"?access_token="+ token;
+
+function Map() {
+
+  var coodinates = {
+      lat: Number(localStorage.getItem('lat')),
+      lng: Number(localStorage.getItem('lng'))
+  }
+
+  return (
+    <GoogleMap
+      defaultZoom={15}
+      defaultCenter={coodinates}
+    >
+      <Marker
+        position={coodinates}
+      />
+    </GoogleMap>
+  )
+}
+
+const WrappedMap = withScriptjs(withGoogleMap(Map));
+
 function Body() {
-  
+
   const { y } = useWindowScroll();
   const [price, setPrice] = useState('');
   const [totalCommission, setTotalCommission] = useState('');
@@ -42,16 +68,11 @@ function Body() {
   const [ncomments, setNcomments] = useState('');
   const [idBrokr, setIdBrokr] = useState('');
 
-
-  const token = localStorage.getItem('token');
-  const id = localStorage.getItem('idProperty');
-  const AnyReactComponent = ( text:any ) => <div>{text}</div>;
-
   //Get property user
-  function getProperty() {
-    const url = "http://localhost:3001/gb/api/v1/properties/" + id + "/" +"?access_token="+ token; 
-    axios.get(url).then((res:any) => {   
-      console.log(res);   
+  function getProperty() {    
+    axios.get(url).then((res:any) => {
+      console.log(res.data);
+      setIdBrokr(res.data.userId);
       setPrice(res.data.price);
       setTotalCommission(res.data.totalCommission);
       setPercentageCommission(res.data.percentageCommission);    
@@ -70,15 +91,13 @@ function Body() {
       setRatingBrokr(res.data.user.rating);
       setCountproperties(res.data.user.countproperties);
       setNcomments(res.data.user.ncomments);
-      
     })
     .catch(err => console.log(err)); 
   }
   //Add property by Favorites
   function addFav() {
-    const data = {createdAt, updatedAt, id, propertyId}
-    const token = localStorage.getItem('token');     
-    const url = "http://localhost:3001/gb/api/v1/favorites/" +"?access_token="+ token; 
+    const data = {createdAt, updatedAt, id, propertyId}    
+    const url = "http://localhost:3001/gb/api/v1/favorites/" +"?access_token="+ token;
     axios.post(url, data).then((res:any) => {
       Swal.fire({            
         html:
@@ -119,10 +138,10 @@ function Body() {
   }  
   //Id brokr
   function IdBrokr() {
-    // localStorage.setItem('IdBrokr', idBrokr);
-    console.log('ID BROKR: ', idBrokr);
+    localStorage.setItem('IdBrokr', idBrokr);
+    window.location.href = '/brokr';
   }
-  useEffect(() => {  
+  useEffect(() => {
     getProperty();
   }, []);
 
@@ -185,7 +204,7 @@ function Body() {
             <Body.Feature>              
               <Body.FeatureInfo><Body.Action>
             {/* <Button.Link onClick={()=>IdBrokr()}>Ver Brokr</Button.Link> */}
-            <Body.Link to={"/brokr/"} onClick={()=>IdBrokr()}>Ver</Body.Link>
+            <Body.Link to={"#"} onClick={()=>IdBrokr()}>Ver</Body.Link>
           </Body.Action></Body.FeatureInfo>
             </Body.Feature>
           </Body.Features>
@@ -219,13 +238,25 @@ function Body() {
             ))}      
           </Body.SpecialFeaturesList>
         </Body.SpecialFeaturesContainer>
+
+
         <Body.UbicationContainer>
-        <Body.Subtitle>Ubicación</Body.Subtitle>
-          <Body.Map
-            loading="lazy"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28080.21171502132!2d-80.6242720354639!3d28.3882686358038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88e0a5ab39504c9b%3A0xbb0bb0f57a55d19e!2sCabo%20Ca%C3%B1averal%2C%20Florida%2032920%2C%20EE.%20UU.!5e0!3m2!1ses!2sco!4v1618686892265!5m2!1ses!2sco"
-          />
+        <Body.Subtitle>Ubicación</Body.Subtitle><br/><br/>
+        <Body.DetailInformation>
+            {description}
+          </Body.DetailInformation><br/><br/>
+          <div style={{width:"70vw", height:"70vh"}}>
+            <WrappedMap
+              googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&
+              libraries=geometry,drawing,places&key=AIzaSyC36bGPspEJEk79AVJmUNWXcjMB7AlYtdg`}
+              loadingElement={<div style={{height:"100%"}}></div>}
+              containerElement={<div style={{height:"100%"}}></div>}
+              mapElement={<div style={{height:"100%"}}></div>}
+            />
+          </div>
         </Body.UbicationContainer>
+
+
         <Body.DetailsContiner>
           <Body.Subtitle>Más detalles</Body.Subtitle>
           <Body.DetailInformation>
@@ -281,7 +312,9 @@ function Body() {
       </Body.Contact>
     </Body.Container>
   );
+ 
 }
+
 
 Body.Link = styled(Link)<{ to: string }>`
   color: #e5b88e;

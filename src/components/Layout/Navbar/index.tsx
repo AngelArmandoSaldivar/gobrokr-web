@@ -32,7 +32,7 @@ function Navbar(props: NavbarProps) {
           Inicio
         </Navbar.Link>
         <Navbar.Link to={'/rent'} isActive={pathname === '/rent'}>
-          Renta
+          Rentar
         </Navbar.Link>
         <Navbar.Link to={'/'}>Desarrollo</Navbar.Link>
         <Navbar.Link to={'/contact'} isActive={pathname === '/contact'}>
@@ -40,9 +40,6 @@ function Navbar(props: NavbarProps) {
         </Navbar.Link>
         <Navbar.Link to={'/'} isLast>
           Brokrs
-        </Navbar.Link>      
-        <Navbar.Link to={'/'} >
-          Salir
         </Navbar.Link>
       </Navbar.LinksContainer>
       <Navbar.CTAContainer onClick={onOpenModal}>

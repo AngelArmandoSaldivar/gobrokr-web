@@ -1,16 +1,16 @@
 import React from 'react';
-import { Layout } from '../../components';
+import { LayoutProperties } from '../../components';
 import { Header, Body } from './components';
 import styled from 'styled-components';
 
 function Property() {
   return (
-    <Layout>
+    <LayoutProperties>
       <Property.Container>
         <Header />
         <Body />
       </Property.Container>
-    </Layout>
+    </LayoutProperties>
   );
 }
 

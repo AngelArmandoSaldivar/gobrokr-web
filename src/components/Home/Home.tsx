@@ -1,23 +1,30 @@
-import React, {Component, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import axios from '../../api/index';
 import { EstateCardProps } from '../EstateCard/types';
 import styled from 'styled-components';
-import { Link, LinkProps } from 'react-router-dom';
-import { Formik, FormikProps, FormikValues } from 'formik';
+import { Link } from 'react-router-dom';
+import { Formik, FormikValues } from 'formik';
 import { initialValues } from '../../screens/Rent/formik';
-import { Layout } from '../../components';
-import { useGeolocation } from 'react-use';
+import { LayoutProperties } from '../../components';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { RatingStar } from "rating-star";
-import exampleImage from '../../assets/images/example-estate.png';
+import exampleImage from '../../assets/images/background-third.png';
 import exampleImage2 from '../../assets/images/hero-background.png';
 import imageFond from '../../assets/images/background-third.png';
 
-  function obtenerId(id:any) {   
-      localStorage.setItem('idProperty', id);                   
+  function obtenerId(id:any, lat:any, lng:any) {
+      localStorage.setItem('idProperty', id);
+      localStorage.setItem('lat', lat);
+      localStorage.setItem('lng', lng);
+      window.location.href = '/property/' + localStorage.getItem("idProperty");
   };
+  function idClassification(id:any, names:any, name:any) {
+    localStorage.setItem('idClassification', id);
+    localStorage.setItem('tipos', names);
+    localStorage.setItem('tipo', name);
+  }
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,17 +39,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-function Home(props:EstateCardProps) {
+function Home(props:EstateCardProps) {  
 
   const classes = useStyles();
 
-    var options = {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 3600
-    };
-        
     if(localStorage.getItem('token') === null){
         window.location.href = '/';
     }
@@ -54,7 +54,7 @@ function Home(props:EstateCardProps) {
     const url = "http://localhost:3001/gb/api/v1/popularproperties/home/";
 
     function funLocation() {
-      navigator.geolocation.getCurrentPosition(function(position) {        
+      navigator.geolocation.getCurrentPosition(function(position) {
         axios.get(url + position.coords.latitude + "/" + position.coords.longitude + "?access_token=" + token).then( res => {
           setProperties(res.data.properties);
         })
@@ -62,7 +62,7 @@ function Home(props:EstateCardProps) {
           console.log(err);
         })
       });
-    }
+    }    
 
     useEffect(() => {
  
@@ -72,7 +72,7 @@ function Home(props:EstateCardProps) {
         
     return (
         <>
-        <Layout>
+        <LayoutProperties>
           <Home.Container>
           <Formik
             initialValues={initialValues}
@@ -80,30 +80,29 @@ function Home(props:EstateCardProps) {
           >         
           </Formik>
           <Home.CardContainer>
-
             <Grid container spacing={2}>
               <Grid item xs>
-                <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Departamento</Home.LinkFilter></Paper>
+                <Paper className={classes.paper}><Home.LinkFilter to="/homeproperty/departamentos" onClick={()=>idClassification("5c54c1f5d11796596f4fa1f3", "Departamentos", "Departamento")}>Departamento</Home.LinkFilter></Paper>
+              </Grid>s
+              <Grid item xs>
+                <Paper className={classes.paper}><Home.LinkFilter to="/homeproperty/casas" onClick={()=>idClassification("5c54c1f5d11796596f4fa1f2", "Casas", "Casa")}>Casa</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-                <Paper className={classes.paper}><Home.LinkFilter2 to="/property/12">Casa</Home.LinkFilter2></Paper>
+                <Paper className={classes.paper}><Home.LinkFilter to="/homeproperty/oficinas" onClick={()=>idClassification("5c54c1f5d11796596f4fa1f5", "Oficinas", "Oficina")}>Oficina</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-                <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Oficina</Home.LinkFilter></Paper>
+              <Paper className={classes.paper}><Home.LinkFilter to="/homeproperty/edificios" onClick={()=>idClassification("5c54c1f5d11796596f4fa1f6", "Edificios", "Edificio")}>Edificio</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-              <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Edificio</Home.LinkFilter></Paper>
+              <Paper className={classes.paper}><Home.LinkFilter to="/homeproperty/bodegas" onClick={()=>idClassification("5c54c1f5d11796596f4fa1f7", "Bodegas", "Bodega")}>Bodega</Home.LinkFilter></Paper>
               </Grid>
               <Grid item xs>
-              <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Bodega</Home.LinkFilter></Paper>
-              </Grid>
-              <Grid item xs>
-              <Paper className={classes.paper}><Home.LinkFilter to="/property/12">Terreno</Home.LinkFilter></Paper>
+              <Paper className={classes.paper}><Home.LinkFilter to="/homeproperty/terrenos" onClick={()=>idClassification("5c54c1f5d11796596f4fa1f4", "Terrenos", "Terreno")}>Terreno</Home.LinkFilter></Paper>
               </Grid>
             </Grid>
           
             <Home.TitleContainer>
-              <Home.Title>Encuentra, {"Angel Saldivar"}</Home.Title>              
+              <Home.Title>Encuentra, {"Angel Saldivar"}</Home.Title>
               </Home.TitleContainer>
              <Home.TitleContainer>
               <Home.Title>Novedades</Home.Title>
@@ -112,7 +111,7 @@ function Home(props:EstateCardProps) {
             <Grid container spacing={10}>
               {properties.map((res:any) => (
                 
-                <Grid item key={res.id} xs={12}  sm= {6} md={4} lg={4}>                  
+                <Grid item key={res.id} xs={12}  sm= {6} md={4} lg={4}>
                   <Home.Card className={classes.root}>
                   <Home.ImagePropertyContainer>                        
                     <Home.ImageProperty src={res.archives.map((item:any) => item.location)} size={''}/>
@@ -156,7 +155,7 @@ function Home(props:EstateCardProps) {
                       </Home.EstateInfo>
                       <Home.LinksContainer>
                       <Home.Comission>Comisión: {res.totalCommission}%-({res.percentageCommission}/{res.totalCommission})</Home.Comission>
-                      <Home.Link to={"/property/" + res.id} onClick={()=>obtenerId(res.id)}>Ver</Home.Link>
+                      <Home.Link to={"#"} onClick={()=>obtenerId(res.id, res.location.lat, res.location.lng)}>Ver</Home.Link>
                       {/* <button id={res.id} onClick={obtenerId}></button> */}
                       </Home.LinksContainer>
                   </Home.InformationContainer>
@@ -166,7 +165,7 @@ function Home(props:EstateCardProps) {
             </Grid>
           </Home.CardContainer>
           </Home.Container>
-        </Layout>
+        </LayoutProperties>
         </>
     );
 }
@@ -212,7 +211,7 @@ Home.Container = styled.div`
   background-image: url(${imageFond});
   background-repeat: repeat;
   background-size: auto 30%;
-  margin-bottom: -20px;
+  margin-bottom: -20px; 
 `;
 Home.CardContainer = styled.div`
   width: 100%;
@@ -247,7 +246,7 @@ Home.TitleFilter = styled.h2`
   text-align: center;
 `;
 Home.Title = styled.h2`
-  font-size: 30px;
+  font-size: 24px;
   color: #e5b88e;
   font-weight: bold;
   margin-right: 30px;
@@ -266,6 +265,9 @@ Home.Card = styled.div`
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   margin-top: 50px;
   align-items: center;
+  &:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+  }
 `;
 // image styles
 Home.ImageContainer = styled.div`

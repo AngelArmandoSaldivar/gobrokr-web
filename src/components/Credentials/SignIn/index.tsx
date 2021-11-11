@@ -15,11 +15,12 @@ function SignIn(props: SignInProps) {
   const [password, setPassword] = useState('');    
   const [errorPassword, setErrorPassword] = useState('');
   const [errorEmail, setErrorEmail] = useState('');
-  const { isOpen, onClose } = props;    
+  const { isOpen, onClose } = props;
+  const [name, setName] = useState('');
 
-  const authUser = async (e: string) => {    
+  const authUser = async (e: string) => {
 
-    const data = {email, password};        
+    const data = {email, password};
 
       if(email && password){     
         const res = await axios.post('http://localhost:3001/gb/api/v1/users/login', data)
@@ -33,7 +34,7 @@ function SignIn(props: SignInProps) {
             html:
             '<p style="color:#e5b88e; font-size:20px;">GoBrokr</p> \n' +
             '<p style="color:white;">Error al iniciar sesión. \n</p>' +
-            '<p style="color:white;">Verifica tus datos y vuelve a intentar.</p>',
+            '<p style="color:white;">Verifica tus datos y vuelve a intentar.</p>',  
             width: 500,
             padding: '1em',
             background: '#1b1e24',
@@ -55,9 +56,9 @@ function SignIn(props: SignInProps) {
       } else if(password == "") {
         setErrorPassword('Ingresar contraseña!');
       }
+      
   }
-  
-  
+
   const title = signUp
     ? 'Crear cuenta'
     : recoverPassword

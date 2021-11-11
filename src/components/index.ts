@@ -1,4 +1,5 @@
 export { default as Layout } from './Layout';
+export { default as LayoutProperties } from './LayoutProperties';
 export { default as Search } from './Search';
 export { default as ButtonComponent } from './Button';
 export { default as TextInput } from './Inputs/TextInput';

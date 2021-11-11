@@ -1,16 +1,16 @@
 import React from 'react';
-import { Layout } from '../../components';
+import { LayoutProperties } from '../../components';
 import { Header, Body } from './components';
 import styled from 'styled-components';
 
 function Brokr() {
   return (
-    <Layout>
+    <LayoutProperties>
       <Brokr.Container>
         <Header />
         <Body />
       </Brokr.Container>
-    </Layout>
+    </LayoutProperties>
   );
 }
 

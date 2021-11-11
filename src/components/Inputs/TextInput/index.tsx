@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { TextInputProps, InputProps } from './types';
 
 function TextInput(props: TextInputProps) {
-  const { value, placeholder, onChange } = props;
+  const { value, placeholder, onChange} = props;
 
   const handleChange = (text: string) => {
     onChange(text);
@@ -14,6 +14,7 @@ function TextInput(props: TextInputProps) {
       value={value}
       placeholder={placeholder}
       onChange={(e) => handleChange(e.target.value)}
+      required
     />
   );
 }

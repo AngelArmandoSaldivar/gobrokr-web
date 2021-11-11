@@ -27,7 +27,7 @@ function Layout(props: LayoutProps) {
         <Layout.WhatsappContainer>
           <WhatsAppWidget
             phoneNumber="5610249771"
-            companyName="Soporte Angel"
+            companyName="Soporte GoBrokr"
             textReplyTime="Normalmente se responde en menos de 12 horas"
             message="Hola, como puedo ayudarte?"
             sendButton="Enviar"
